@@ -1,8 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import { Camera } from 'three';
 
 
 // Canvas
@@ -56,7 +54,6 @@ const loadingManager = new THREE.LoadingManager(
     }, 500)
 },
 (itemUrl, itemsLoaded, itemsTotal) => {
-    console.log(itemUrl, itemsLoaded, itemsTotal);
     const progressRatio = itemsLoaded/itemsTotal
     loadingBar.style.transform = `scalex(${progressRatio})`;
 },
@@ -65,17 +62,11 @@ const loadingManager = new THREE.LoadingManager(
 }
 );
 
-// Object
-//const geometry = new THREE.BoxGeometry(1, 1, 1)
-//const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-//const cube = new THREE.Mesh(geometry, material)
-//scene.add(cube)
-
 // Object Loader
 let donut = null;
-function init(){
-const loader = new GLTFLoader(loadingManager).setPath('models/donut/');
-loader.load('scene.gltf', (gltf)=>{
+//function init(){
+const loader = new GLTFLoader(loadingManager)//.setPath('models/donut/');
+loader.load('models/donut/scene.gltf', (gltf)=>{
     donut = gltf.scene;
 
     donut.position.x = 1.5;
@@ -87,10 +78,9 @@ loader.load('scene.gltf', (gltf)=>{
     donut.scale.set(radius, radius, radius);
     scene.add(donut);
 
-    console.log('loaded');
 })
-};
-init();
+//};
+//init();
 
 // Lights 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -182,32 +172,14 @@ const tick = ()=>{
     const deltaTime = elapsedTime - lastElapsedTime;
     lastElapsedTime = elapsedTime;
 
-    console.log(tick);
 
     if(!!donut){
         donut.position.y = Math.sin(elapsedTime * 0.5) * 0.1 - 0.1;
     }
 
     renderer.render(scene, camera);
-    controls.update();
+
     window.requestAnimationFrame(tick);
 }
 
-
-// Animate
-/*function animate(){
-    requestAnimationFrame(animate);
-    const delta = clock.getDelta();
-    renderer.render(scene, camera);
-    // Camera rotate
-    donut.rotation.y = Math.sin(delta);
-    controls.update();
-}*/
-// Controls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.autoRotate = true;
-controls.update;
-
-//animate();
 tick();
